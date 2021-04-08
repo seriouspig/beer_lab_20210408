@@ -5,7 +5,7 @@
    <beer-list :beers="beers"/>  
    <beer-details :beer="selectedBeer" :favouriteBeers="favouriteBeers"></beer-details>
    </div>
-    <favourite-beers :favouriteBeers="favouriteBeers"></favourite-beers>
+    <favourite-beers :favouriteBeers="favouriteBeers" ></favourite-beers>
   </div>
 </template>
 
@@ -34,18 +34,22 @@ export default {
     
     
   },
-  async mounted() {
-    const res = await fetch ('https://api.punkapi.com/v2/beers')
-    const data = await res.json()
-    this.beers = data
+  // async mounted() {
+  //   const res = await fetch ('https://api.punkapi.com/v2/beers')
+  //   const data = await res.json()
+  //   this.beers = data
 
-  // mounted() {
-  //   fetch('https://api.punkapi.com/v2/beers')
-  //   .then(res => res.json())
-  //   .then(beers => this.beers = beers)
+  mounted() {
+    fetch('https://api.punkapi.com/v2/beers')
+    .then(res => res.json())
+    .then(beers => {
+      this.beers = beers
+      this.beers.map(obj => obj.favourite = false)
+      
+      })
 
-    this.beers.map(obj => obj.favourite = false)
-    console.log(this.beers)
+    // this.beers.map(obj => obj.favourite = false)
+    // console.log(this.beers)
 
   eventBus.$on('beer-selected', (beer) => {
     this.selectedBeer = beer;
@@ -58,6 +62,10 @@ export default {
     beer.favourite = true;
     console.log(this.favouriteBeers)
     })
+
+  eventBus.$on('beer-removed', (beer) => {
+    this.favouriteBeers
+  })
   },
   methods: {
     
